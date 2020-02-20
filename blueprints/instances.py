@@ -173,7 +173,7 @@ def detail_instance(id):
 
 
 @instances.route("/<string:id>/docker_stats", methods=['GET'])
-def detail_instance(id):
+def docker_instance(id):
     if id in instance_details:
         return str(instance_details[id].container.stats)
     return abort(404)
