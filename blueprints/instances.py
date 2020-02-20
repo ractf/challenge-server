@@ -100,7 +100,7 @@ def get_instance_for(user, challenge):
     for instance in challenge_instances[challenge]:
         if len(instance.users) < instance.user_limit and instance.container.short_id not in user_avoid_list[user]:
             if len(instance.users) + 2 > instance.user_limit:
-                if challenge_data[challenge_name]['can_prestart']:
+                if challenge_data[challenge]['can_prestart']:
                     new_instance_queue.append(challenge)
             instance.users.append(user)
             user_instances[user] = instance
