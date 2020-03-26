@@ -5,7 +5,7 @@ from flask import Flask, request, abort
 from blueprints import instances
 
 app = Flask(__name__)
-api_key = os.getenv("API_KEY")
+api_key = 'api-key'
 
 
 @app.before_request
