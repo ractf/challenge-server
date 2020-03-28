@@ -20,6 +20,7 @@ class Instance:
     expiry: int
     users: list
     user_limit: int
+    container_id: str
 
     def __repr__(self):
         return str({
@@ -29,7 +30,8 @@ class Instance:
             "started": self.started,
             "expiry": self.expiry,
             "users": self.users,
-            "user_limit": self.user_limit
+            "user_limit": self.user_limit,
+            "container_id": self.container_id
         })
 
 
@@ -66,7 +68,7 @@ def start_instance(challenge, port=None):
                                       mem_limit=mem_limit, memswap_limit=mem_limit)
     instance = Instance(challenge=challenge, container=container, port=port, started=int(time.time()),
                         expiry=int(time.time()) + lifetimes[challenge], users=[],
-                        user_limit=challenge_data[challenge]['user_limit'])
+                        user_limit=challenge_data[challenge]['user_limit'], container_id=container.short_id)
     instance_details[container.short_id] = instance
     challenge_instances[challenge].append(instance)
     if instance.challenge in new_instance_queue:
@@ -151,38 +153,37 @@ def stop_instance(instance):
 @instances.route("/", methods=['POST'])
 def create_instance():
     challenge = request.json.get('challenge')
-    user = request.json.get('user')
+    user = str(request.json.get('user'))
     if challenge not in challenge_data:
         return abort(404)
     if user in user_instances:
         return abort(403)
-    instance = get_instance_for(user, challenge)
-    return str(instance)
+    return json.dumps(get_instance_for(user, challenge), default=str)
 
 
 @instances.route("/", methods=['GET'])
 def list_instances():
-    return str(instance_details)
+    return json.dumps(instance_details, default=str)
 
 
 @instances.route("/<string:id>", methods=['GET'])
 def detail_instance(id):
     if id in instance_details:
-        return str(instance_details[id])
+        return json.dumps(instance_details[id], default=str)
     return abort(404)
 
 
 @instances.route("/<string:id>/docker_stats", methods=['GET'])
 def docker_instance(id):
     if id in instance_details:
-        return str(instance_details[id].container.stats)
+        return json.dumps(instance_details[id].container.stats, default=str)
     return abort(404)
 
 
 @instances.route("/user/<string:user>", methods=['GET'])
 def user_instance(user):
     if user in user_instances:
-        return str(user_instances[user])
+        return json.dumps(user_instances[user], default=str)
     return abort(404)
 
 
@@ -197,7 +198,7 @@ def request_reset(id):
     instance.users.remove(user)
     user_avoid_list[user].append(instance.container.short_id)
     new_instance = get_instance_for(user, instance.challenge)
-    return str(new_instance)
+    return json.dumps(new_instance, default=str)
 
 
 @instances.route("/disconnect/<string:user>", methods=['POST'])
