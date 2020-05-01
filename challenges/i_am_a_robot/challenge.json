@@ -1,0 +1,6 @@
+{
+  "name": "i_am_a_robot",
+  "port": 3000,
+  "mem_limit": 512,
+  "user_limit": 3
+}
