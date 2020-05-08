@@ -1,6 +1,0 @@
-{
-  "name": "fake_filesystem",
-  "port": 1000,
-  "mem_limit": 512,
-  "user_limit": 3
-}

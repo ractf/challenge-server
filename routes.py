@@ -1,5 +1,3 @@
-import json
-
 from flask import Blueprint, request, abort, jsonify
 
 from challenges import Instance, start_instance, challenge_data, redis

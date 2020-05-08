@@ -92,6 +92,10 @@ def start_instance(challenge, port=None):
             if port not in used_ports:
                 break
     mem_limit = challenge_data[challenge]['mem_limit'] * (1024 ** 2)
+    try:
+        client.images.get(challenge)
+    except:
+        build_image(challenge)
     container = client.containers.run(challenge, detach=True, ports={ports[challenge]: port},
                                       mem_limit=mem_limit, memswap_limit=mem_limit)
     instance = Instance(challenge=challenge, container=container, port=port, started=int(time.time()),
