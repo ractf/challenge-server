@@ -56,9 +56,9 @@ def docker_instance(id):
 
 @blueprint.route('/user/<string:user>', methods=['GET'])
 def user_instance(user):
-    instance_id = redis.get(user)
-    if instance_id is not None:
-        return jsonify(Instance.get(instance_id).to_json())
+    instance = redis.get(user)
+    if instance is not None:
+        return jsonify(instance)
     return abort(404)
 
 
@@ -84,22 +84,6 @@ def disconnect(user):
         instance.users.remove(user)
         redis.delete(user)
     return 'disconnected'
-
-
-@blueprint.route('/disconnect', methods=['POST'])
-def disconnect_f():
-    for challenge in challenge_data:
-        for instance_id in redis.smembers(challenge):
-            instance = Instance.get(instance_id)
-            for user in instance.users:
-                disconnect(user)
-    return 'disconnected'
-
-
-@blueprint.route('/challenges/<string:id>', methods=['DELETE'])
-def delete_challenge(id):
-    challenge_data.pop(id)
-    return 'deleted'
 
 
 @blueprint.route('/stats', methods=['GET'])

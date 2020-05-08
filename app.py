@@ -30,8 +30,9 @@ def reset():
     redis.flushdb()
     client = docker.from_env()
     for container in client.containers.list():
-        print(f'Stopping {container.id}')
-        container.stop(timeout=5)
+        if container.name != "cadvisor":
+            print(f'Stopping {container.id}')
+            container.stop(timeout=5)
 
 
 app.register_blueprint(routes.blueprint, url_prefix='/')

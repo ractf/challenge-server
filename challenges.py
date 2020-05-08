@@ -88,7 +88,7 @@ def start_instance(challenge, port=None):
     used_ports = redis.smembers('ports')
     if port is None:
         while True:
-            port = random.randrange(1025, 65535)
+            port = random.randrange(10000, 65535)
             if port not in used_ports:
                 break
     mem_limit = challenge_data[challenge]['mem_limit'] * (1024 ** 2)
