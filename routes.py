@@ -58,7 +58,7 @@ def docker_instance(id):
 def user_instance(user):
     instance = redis.get(user)
     if instance is not None:
-        return jsonify(instance)
+        return jsonify(Instance.from_string(instance))
     return abort(404)
 
 
